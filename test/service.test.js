@@ -48,7 +48,7 @@ describe('Service Integration Test with Multiple Stubs', () => {
         expect(secondaryRepositoryStub.getItemById.calledOnceWith(5)).to.be.true;
     });
 
-    it('should delete item from primary repository if found', () => {
+    it('should delete item from secondary repository if found', () => {
         primaryRepositoryStub.deleteItem.withArgs(1).returns(null)
         const item = { id: 1, name: 'Item 1' }
         secondaryRepositoryStub.deleteItem.withArgs(1).returns(item)
