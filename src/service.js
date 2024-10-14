@@ -24,4 +24,16 @@ export default class Service {
     const newItem = { id: this.repository.data.length + 1, name };
     return this.repository.addItem(newItem);
   }
+
+  deleteItem(id) {
+    let item = this.primaryRepository.deleteItem(id)
+    if (!item) {
+        item = this.secondaryRepository.deleteItem(id)
+    }
+    if (!item) {
+        throw new Error('Item not found in both repositories')
+    }
+    return item
+  }
+
 }

@@ -47,4 +47,26 @@ describe('Service Integration Test with Multiple Stubs', () => {
         expect(primaryRepositoryStub.getItemById.calledOnceWith(5)).to.be.true;
         expect(secondaryRepositoryStub.getItemById.calledOnceWith(5)).to.be.true;
     });
+
+    it('should delete item from primary repository if found', () => {
+        primaryRepositoryStub.deleteItem.withArgs(1).returns(null)
+        const item = { id: 1, name: 'Item 1' }
+        secondaryRepositoryStub.deleteItem.withArgs(1).returns(item)
+    
+        const result = service.deleteItem(1)
+    
+        expect(result).to.deep.equal(item)
+        expect(primaryRepositoryStub.deleteItem.calledOnceWith(1)).to.be.true
+        expect(secondaryRepositoryStub.deleteItem.calledOnceWith(1)).to.be.true
+    })
+    
+    it('should throw an error if item is not found in both repositories', () => {
+        primaryRepositoryStub.deleteItem.withArgs(3).returns(null)
+        secondaryRepositoryStub.deleteItem.withArgs(3).returns(null)
+    
+        expect(() => service.deleteItem(3)).to.throw('Item not found in both repositories')
+        expect(primaryRepositoryStub.deleteItem.calledOnceWith(3)).to.be.true
+        expect(secondaryRepositoryStub.deleteItem.calledOnceWith(3)).to.be.true
+    })
+
 });
